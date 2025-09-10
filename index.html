@@ -112,6 +112,28 @@
                 </div>
             </div>
             
+            <!-- Admin Member Detail Page -->
+            <div id="member-detail-page" class="page-container">
+                 <button id="back-to-roster-btn" class="bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors mb-6">Zurück zum Roster</button>
+                <div class="bg-gray-800 p-6 rounded-xl shadow-xl space-y-4 max-w-xl mx-auto">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-white">Mitgliedsdetails (Admin)</h2>
+                        <button id="delete-member-btn" title="Mitglied löschen" class="text-gray-400 hover:text-red-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-400">Eintrittsdatum: <span id="detail-join-date" class="font-bold text-white"></span></p>
+                    <div class="flex flex-col gap-4 pt-4 border-t border-gray-700">
+                        <div><label for="detail-in-game-name" class="block text-sm font-medium text-gray-400">In-game Name</label><input type="text" id="detail-in-game-name" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
+                        <div><label for="detail-discord-name" class="block text-sm font-medium text-gray-400">Discord Name</label><input type="text" id="detail-discord-name" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
+                        <div><label for="detail-discord-id" class="block text-sm font-medium text-gray-400">Discord User ID</label><input type="text" id="detail-discord-id" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
+                        <div><label for="detail-tta-league" class="block text-sm font-medium text-gray-400">TTA Liga</label><input type="text" id="detail-tta-league" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
+                        <div><label for="detail-live-arena-league" class="block text-sm font-medium text-gray-400">Live-Arena-Liga</label><input type="text" id="detail-live-arena-league" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
+                    </div>
+                    <button id="save-member-btn" class="w-full bg-amber-600 text-white py-2 px-4 rounded-md hover:bg-amber-700 transition-colors font-semibold">Daten speichern</button>
+                </div>
+            </div>
+
             <div id="settings-page" class="page-container">
                  <div class="bg-gray-800 p-6 rounded-xl shadow-xl max-w-xl mx-auto">
                     <h2 class="text-2xl font-bold mb-4 text-white">Einstellungen (Admin)</h2>
@@ -190,6 +212,7 @@
             deleteModal: document.getElementById('delete-modal'),
             deleteMemberNameSpan: document.getElementById('delete-member-name'),
             confirmDeleteBtn: document.getElementById('confirm-delete-btn'),
+            cancelDeleteBtn: document.getElementById('cancel-delete-btn'),
             vacationModal: document.getElementById('vacation-modal'),
             vacationMemberNameSpan: document.getElementById('vacation-member-name'),
             vacationStartDateInput: document.getElementById('vacation-start-date'),
@@ -197,6 +220,9 @@
             saveVacationBtn: document.getElementById('save-vacation-btn'),
             cancelVacationBtn: document.getElementById('cancel-vacation-btn'),
             removeVacationBtn: document.getElementById('remove-vacation-btn'),
+            backToRosterBtn: document.getElementById('back-to-roster-btn'),
+            saveMemberBtn: document.getElementById('save-member-btn'),
+            deleteMemberBtn: document.getElementById('delete-member-btn'),
         };
         
         // --- Core Functions ---
@@ -299,20 +325,6 @@
             }
             showLoading(false);
         }
-
-        ui.confirmClaimBtn.addEventListener('click', async () => {
-            const selectedMemberId = ui.claimProfileSelect.value;
-            if (selectedMemberId && currentUser.auth) {
-                showLoading(true);
-                try {
-                    await updateDoc(doc(db, "clans", "farbtonne5", "members", selectedMemberId), { googleUID: currentUser.auth.uid });
-                } catch (error) {
-                    console.error("Fehler beim Zuweisen des Profils:", error);
-                    alert("Ein Fehler ist aufgetreten. Prüfe die Browser-Konsole (F12) und die Firebase-Sicherheitsregeln.");
-                    showLoading(false);
-                }
-            }
-        });
         
         function detachDataListeners() {
             unsubscribeListeners.forEach(unsub => unsub());
@@ -374,6 +386,17 @@
             document.getElementById('profile-tta-league').value = p.ttaLeague || '';
             document.getElementById('profile-live-arena-league').value = p.liveArenaLeague || '';
         }
+        
+        function renderMemberDetail(member) {
+            document.getElementById('detail-join-date').textContent = new Date(member.joinDate).toLocaleDateString();
+            document.getElementById('detail-in-game-name').value = member.inGameName;
+            document.getElementById('detail-discord-name').value = member.discordName;
+            document.getElementById('detail-discord-id').value = member.discordId || '';
+            document.getElementById('detail-tta-league').value = member.ttaLeague || '';
+            document.getElementById('detail-live-arena-league').value = member.liveArenaLeague || '';
+            ui.saveMemberBtn.dataset.memberId = member.id;
+            ui.deleteMemberBtn.dataset.memberId = member.id;
+        }
 
         function populateMemberSelect(members) {
             if (!ui.assignedToSelect) return;
@@ -395,6 +418,9 @@
         function renderSiegeTasks(tasks) {
             ui.siegeBoard.innerHTML = '';
             const teams = clanSettings.siegeTeamNames || ['Team 1', 'Team 2', 'Team 3'];
+            const siegeTeamSelect = document.getElementById('siege-team');
+            if (siegeTeamSelect) siegeTeamSelect.innerHTML = teams.map(name => `<option value="${name}">${name}</option>`).join('');
+
             teams.forEach(team => {
                 const teamDiv = document.createElement('div');
                 teamDiv.className = 'bg-gray-800 p-4 rounded-lg shadow-lg flex-1 min-w-[250px] space-y-2';
@@ -415,7 +441,6 @@
         }
         
         function renderSettings() {
-            // Populate all settings fields from clanSettings object
             const s = clanSettings;
             document.getElementById('discord-webhook-url').value = s.webhookUrl || '';
             const teamNames = s.siegeTeamNames || ['Team 1', 'Team 2', 'Team 3'];
@@ -430,7 +455,6 @@
             document.getElementById('chimera-reminder-day').value = chimera.day;
             document.getElementById('chimera-reminder-time').value = chimera.time;
 
-            // Render lead selection
             const leadContainer = document.getElementById('lead-selection-container');
             leadContainer.innerHTML = '';
             allMembers.forEach(member => {
@@ -452,10 +476,52 @@
                 btn.classList.toggle('active', btn.dataset.target === targetId);
             });
         }
+        
+        async function sendDiscordReminder(keyType) {
+            if (!currentUser.isLeader) return alert("Nur Leader können Erinnerungen senden.");
+            const webhookUrl = clanSettings.webhookUrl;
+            if (!webhookUrl) return alert("Bitte zuerst eine Discord Webhook URL in den Einstellungen eintragen!");
+            
+            const bossName = keyType === 'keysHydraUsed' ? 'Hydra' : 'Chimäre';
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+
+            const missingKeysMembers = allMembers.filter(member => {
+                const vacationStartDate = member.vacationStart ? new Date(member.vacationStart) : null;
+                const vacationEndDate = member.vacationEnd ? new Date(member.vacationEnd) : null;
+                const isOnVacation = vacationStartDate && vacationEndDate && today >= vacationStartDate && today <= vacationEndDate;
+                return !member[keyType] && !isOnVacation;
+            });
+
+            if (missingKeysMembers.length === 0) return alert(`Alle Mitglieder haben ihre ${bossName}-Schlüssel genutzt!`);
+            
+            showLoading(true);
+            const mentions = missingKeysMembers.filter(m => m.discordId && /^\d{17,19}$/.test(m.discordId)).map(m => `<@${m.discordId}>`);
+            const namesOnly = missingKeysMembers.filter(m => !m.discordId || !/^\d{17,19}$/.test(m.discordId)).map(m => m.discordName);
+            
+            let content = `**Erinnerung:** Bitte die **${bossName}**-Schlüssel nutzen!\n\n`;
+            if (mentions.length > 0) content += mentions.join(' ');
+            if (namesOnly.length > 0) content += `\n\nOffen bei (ohne Ping): ${namesOnly.join(', ')}`;
+
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: content.trim(), username: "Clan App Bot" })
+                });
+                if (!response.ok) throw new Error(`Server antwortete mit Status: ${response.status}`);
+                alert(`Erinnerung für ${bossName} erfolgreich an Discord gesendet.`);
+            } catch (error) {
+                console.error('Fehler beim Senden des Webhooks:', error);
+                alert('Fehler beim Senden der Erinnerung an Discord. Prüfe die URL und die Browser-Konsole.');
+            } finally {
+                showLoading(false);
+            }
+        }
 
         // --- Event Listeners & Logic ---
         ui.loginBtn.addEventListener('click', () => signInWithPopup(auth, new GoogleAuthProvider()));
         ui.logoutBtn.addEventListener('click', () => signOut(auth));
+        ui.backToRosterBtn.addEventListener('click', () => showPage('roster-page'));
 
         ui.memberList.addEventListener('click', async (e) => {
             const target = e.target;
@@ -465,13 +531,15 @@
             if (!member) return;
 
             if (target.matches('input[type="checkbox"]') && member.id === currentUser.profile?.id) {
-                const keyType = target.dataset.keyType;
-                await updateDoc(doc(db, "clans", "farbtonne5", "members", memberId), { [keyType]: target.checked });
+                await updateDoc(doc(db, "clans", "farbtonne5", "members", memberId), { [target.dataset.keyType]: target.checked });
             }
 
             if (currentUser.isLeader) {
                 const action = target.closest('td')?.dataset.action;
-                if (action === 'set-vacation') {
+                if (action === 'view-detail') {
+                    renderMemberDetail(member);
+                    showPage('member-detail-page');
+                } else if (action === 'set-vacation') {
                     ui.vacationMemberNameSpan.textContent = member.inGameName;
                     ui.vacationStartDateInput.value = member.vacationStart ? new Date(member.vacationStart).toISOString().split('T')[0] : '';
                     ui.vacationEndDateInput.value = member.vacationEnd ? new Date(member.vacationEnd).toISOString().split('T')[0] : '';
@@ -486,12 +554,10 @@
             const memberId = e.currentTarget.dataset.memberId;
             const startDate = ui.vacationStartDateInput.value;
             const endDate = ui.vacationEndDateInput.value;
-            if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-                return alert('Das Startdatum darf nicht nach dem Enddatum liegen.');
-            }
+            if (startDate && endDate && new Date(startDate) > new Date(endDate)) return alert('Das Startdatum darf nicht nach dem Enddatum liegen.');
             await updateDoc(doc(db, "clans", "farbtonne5", "members", memberId), {
-                vacationStart: startDate ? new Date(startDate).toISOString() : null,
-                vacationEnd: endDate ? new Date(endDate).toISOString() : null
+                vacationStart: startDate || null,
+                vacationEnd: endDate || null
             });
             ui.vacationModal.classList.add('hidden');
         });
@@ -517,13 +583,55 @@
             showLoading(false);
             alert('Profil gespeichert!');
         });
+        
+        ui.saveMemberBtn.addEventListener('click', async (e) => {
+            if (!currentUser.isLeader) return;
+            const memberId = e.target.dataset.memberId;
+            if (!memberId) return;
+            showLoading(true);
+            const dataToUpdate = {
+                inGameName: document.getElementById('detail-in-game-name').value.trim(),
+                discordName: document.getElementById('detail-discord-name').value.trim(),
+                discordId: document.getElementById('detail-discord-id').value.trim(),
+                ttaLeague: document.getElementById('detail-tta-league').value.trim(),
+                liveArenaLeague: document.getElementById('detail-live-arena-league').value.trim(),
+            };
+            await updateDoc(doc(db, "clans", "farbtonne5", "members", memberId), dataToUpdate);
+            showLoading(false);
+            alert('Mitgliedsdaten gespeichert!');
+            showPage('roster-page');
+        });
+
+        ui.deleteMemberBtn.addEventListener('click', (e) => {
+            if (!currentUser.isLeader) return;
+            const memberId = e.currentTarget.dataset.memberId;
+            const member = allMembers.find(m => m.id === memberId);
+            if (member) {
+                ui.deleteMemberNameSpan.textContent = member.inGameName;
+                ui.confirmDeleteBtn.dataset.memberId = memberId;
+                ui.deleteModal.classList.remove('hidden');
+            }
+        });
+
+        ui.confirmDeleteBtn.addEventListener('click', async (e) => {
+            if (!currentUser.isLeader) return;
+            const memberId = e.currentTarget.dataset.memberId;
+            showLoading(true);
+            await deleteDoc(doc(db, "clans", "farbtonne5", "members", memberId));
+            ui.deleteModal.classList.add('hidden');
+            showLoading(false);
+            alert('Mitglied gelöscht.');
+            showPage('roster-page');
+        });
+
+        ui.cancelDeleteBtn.addEventListener('click', () => ui.deleteModal.classList.add('hidden'));
 
         ui.memberForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser.isLeader) return;
             const inGameName = document.getElementById('in-game-name').value.trim();
             const discordName = document.getElementById('discord-name').value.trim();
-            if (!inGameName || !discordName) return alert("Namen dürfen nicht leer sein.");
+if (!inGameName || !discordName) return alert("Namen dürfen nicht leer sein.");
             
             const newMember = {
                 inGameName, discordName,
@@ -555,9 +663,9 @@
             const newSettings = {
                 webhookUrl: document.getElementById('discord-webhook-url').value.trim(),
                 siegeTeamNames: [
-                    document.getElementById('team-name-1').value.trim(),
-                    document.getElementById('team-name-2').value.trim(),
-                    document.getElementById('team-name-3').value.trim()
+                    document.getElementById('team-name-1').value.trim() || 'Team 1',
+                    document.getElementById('team-name-2').value.trim() || 'Team 2',
+                    document.getElementById('team-name-3').value.trim() || 'Team 3'
                 ],
                 autoRemindersEnabled: document.getElementById('auto-reminder-toggle').checked,
                 hydraReminderSchedule: {
@@ -573,6 +681,35 @@
             await setDoc(doc(db, "clans", "farbtonne5"), { settings: newSettings }, { merge: true });
             showLoading(false);
             alert('Einstellungen gespeichert!');
+        });
+        
+        ui.sendHydraReminderBtn.addEventListener('click', () => sendDiscordReminder('keysHydraUsed'));
+        ui.sendChimeraReminderBtn.addEventListener('click', () => sendDiscordReminder('keysChimeraUsed'));
+        
+        ui.siegeTaskForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser.isLeader) return;
+            const team = document.getElementById('siege-team').value;
+            const assignedTo = ui.assignedToSelect.value;
+            if (!team || !assignedTo) return alert('Bitte Team und Mitglied auswählen.');
+            
+            const newTask = { siegeTeam: team, assignedTo, status: 'offen', date: new Date().toISOString() };
+            await addDoc(collection(db, "clans", "farbtonne5", "siegeTasks"), newTask);
+            ui.siegeTaskForm.reset();
+            alert('Angriff zugewiesen!');
+        });
+
+        ui.siegeBoard.addEventListener('click', async (e) => {
+            if (!currentUser.isLeader) return;
+            const button = e.target.closest('button[data-task-id]');
+            if (button) {
+                const taskId = button.dataset.taskId;
+                const task = siegeTasks.find(t => t.id === taskId);
+                if (task) {
+                    const newStatus = task.status === 'offen' ? 'erledigt' : 'offen';
+                    await updateDoc(doc(db, "clans", "farbtonne5", "siegeTasks", taskId), { status: newStatus });
+                }
+            }
         });
 
     </script>
