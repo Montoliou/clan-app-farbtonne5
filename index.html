@@ -184,6 +184,7 @@
         let siegeTasks = [];
         let clanSettings = {};
         let unsubscribeListeners = [];
+        let reminderInterval = null;
 
         // --- UI Elements ---
         const ui = {
@@ -242,11 +243,18 @@
                 ui.userNameEl.textContent = user.displayName;
                 ui.userPhotoEl.src = user.photoURL;
                 attachDataListeners();
+                if (!reminderInterval) {
+                    reminderInterval = setInterval(checkAutomaticReminders, 60000); // Check every minute
+                }
             } else {
                 currentUser = { auth: null, profile: null, isLeader: false };
                 ui.mainAppPage.style.display = 'none';
                 ui.loginPage.style.display = 'flex';
                 detachDataListeners();
+                if (reminderInterval) {
+                    clearInterval(reminderInterval);
+                    reminderInterval = null;
+                }
                 showLoading(false);
             }
         });
@@ -477,7 +485,49 @@
             });
         }
         
-        async function sendDiscordReminder(keyType) {
+        const getWeekNumber = (d) => {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+            return d.getUTCFullYear() + '-' + weekNo;
+        };
+
+        async function checkAutomaticReminders() {
+            if (!clanSettings.autoRemindersEnabled || !currentUser.isLeader) return;
+
+            const now = new Date();
+            const day = now.getDay();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const currentWeek = getWeekNumber(now);
+            
+            const lastSent = clanSettings.lastReminderSent || { hydra: null, chimera: null };
+            let settingsUpdated = false;
+
+            const hydraSchedule = clanSettings.hydraReminderSchedule || { day: 2, time: '19:00' };
+            const [hydraHour, hydraMinute] = hydraSchedule.time.split(':').map(Number);
+            if (day === hydraSchedule.day && (hour > hydraHour || (hour === hydraHour && minute >= hydraMinute)) && lastSent.hydra !== currentWeek) {
+                await sendDiscordReminder('keysHydraUsed', true);
+                lastSent.hydra = currentWeek;
+                settingsUpdated = true;
+            }
+
+            const chimeraSchedule = clanSettings.chimeraReminderSchedule || { day: 3, time: '19:00' };
+            const [chimeraHour, chimeraMinute] = chimeraSchedule.time.split(':').map(Number);
+            if (day === chimeraSchedule.day && (hour > chimeraHour || (hour === chimeraHour && minute >= chimeraMinute)) && lastSent.chimera !== currentWeek) {
+                await sendDiscordReminder('keysChimeraUsed', true);
+                lastSent.chimera = currentWeek;
+                settingsUpdated = true;
+            }
+
+            if (settingsUpdated) {
+                const newSettings = { ...clanSettings, lastReminderSent: lastSent };
+                await setDoc(doc(db, "clans", "farbtonne5"), { settings: newSettings }, { merge: true });
+            }
+        }
+
+        async function sendDiscordReminder(keyType, isAutomatic = false) {
             if (!currentUser.isLeader) return alert("Nur Leader können Erinnerungen senden.");
             const webhookUrl = clanSettings.webhookUrl;
             if (!webhookUrl) return alert("Bitte zuerst eine Discord Webhook URL in den Einstellungen eintragen!");
@@ -492,15 +542,29 @@
                 return !member[keyType] && !isOnVacation;
             });
 
-            if (missingKeysMembers.length === 0) return alert(`Alle Mitglieder haben ihre ${bossName}-Schlüssel genutzt!`);
+            if (missingKeysMembers.length === 0) {
+                if(!isAutomatic) alert(`Alle Mitglieder haben ihre ${bossName}-Schlüssel genutzt!`);
+                return;
+            }
             
             showLoading(true);
             const mentions = missingKeysMembers.filter(m => m.discordId && /^\d{17,19}$/.test(m.discordId)).map(m => `<@${m.discordId}>`);
             const namesOnly = missingKeysMembers.filter(m => !m.discordId || !/^\d{17,19}$/.test(m.discordId)).map(m => m.discordName);
             
-            let content = `**Erinnerung:** Bitte die **${bossName}**-Schlüssel nutzen!\n\n`;
+            let footer = '';
+            if (isAutomatic) {
+                const leadNames = clanSettings.clanLeads
+                    .map(leadId => allMembers.find(m => m.id === leadId)?.inGameName)
+                    .filter(Boolean);
+                footer = `\n\n*Automatische Erinnerung im Namen von: ${leadNames.join(', ')}*`;
+            } else {
+                footer = `\n\n*Erinnerung gesendet von: ${currentUser.profile.inGameName}*`;
+            }
+
+            let content = `**${isAutomatic ? 'Automatische Erinnerung' : 'Erinnerung'}:** Bitte die **${bossName}**-Schlüssel nutzen!\n\n`;
             if (mentions.length > 0) content += mentions.join(' ');
             if (namesOnly.length > 0) content += `\n\nOffen bei (ohne Ping): ${namesOnly.join(', ')}`;
+            content += footer;
 
             try {
                 const response = await fetch(webhookUrl, {
@@ -509,10 +573,10 @@
                     body: JSON.stringify({ content: content.trim(), username: "Clan App Bot" })
                 });
                 if (!response.ok) throw new Error(`Server antwortete mit Status: ${response.status}`);
-                alert(`Erinnerung für ${bossName} erfolgreich an Discord gesendet.`);
+                if (!isAutomatic) alert(`Erinnerung für ${bossName} erfolgreich an Discord gesendet.`);
             } catch (error) {
                 console.error('Fehler beim Senden des Webhooks:', error);
-                alert('Fehler beim Senden der Erinnerung an Discord. Prüfe die URL und die Browser-Konsole.');
+                if (!isAutomatic) alert('Fehler beim Senden der Erinnerung an Discord. Prüfe die URL und die Browser-Konsole.');
             } finally {
                 showLoading(false);
             }
@@ -683,8 +747,22 @@ if (!inGameName || !discordName) return alert("Namen dürfen nicht leer sein.");
             alert('Einstellungen gespeichert!');
         });
         
-        ui.sendHydraReminderBtn.addEventListener('click', () => sendDiscordReminder('keysHydraUsed'));
-        ui.sendChimeraReminderBtn.addEventListener('click', () => sendDiscordReminder('keysChimeraUsed'));
+        ui.confirmClaimBtn.addEventListener('click', async () => {
+            const selectedMemberId = ui.claimProfileSelect.value;
+            if (selectedMemberId && currentUser.auth) {
+                showLoading(true);
+                try {
+                    await updateDoc(doc(db, "clans", "farbtonne5", "members", selectedMemberId), { googleUID: currentUser.auth.uid });
+                } catch (error) {
+                    console.error("Fehler beim Zuweisen des Profils:", error);
+                    alert("Ein Fehler ist aufgetreten. Prüfe die Browser-Konsole (F12) und die Firebase-Sicherheitsregeln.");
+                    showLoading(false);
+                }
+            }
+        });
+        
+        ui.sendHydraReminderBtn.addEventListener('click', () => sendDiscordReminder('keysHydraUsed', false));
+        ui.sendChimeraReminderBtn.addEventListener('click', () => sendDiscordReminder('keysChimeraUsed', false));
         
         ui.siegeTaskForm.addEventListener('submit', async (e) => {
             e.preventDefault();
