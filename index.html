@@ -8,10 +8,9 @@
     <style>
         .page-container, .settings-section { display: none; }
         .settings-menu-btn.active { background-color: #ca8a04; color: white; }
-        /* Lade-Spinner */
         .loader {
-            border: 4px solid #f3f3f3; /* Light grey */
-            border-top: 4px solid #ca8a04; /* Amber */
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ca8a04;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -26,7 +25,7 @@
 <body class="bg-gray-900 text-gray-100 font-sans p-6 min-h-screen flex flex-col items-center justify-center">
 
     <!-- Loading Indicator -->
-    <div id="loading-indicator" class="flex flex-col items-center justify-center absolute inset-0 bg-gray-900 bg-opacity-80 z-50">
+    <div id="loading-indicator" class="flex flex-col items-center justify-center fixed inset-0 bg-gray-900 bg-opacity-80 z-50">
         <div class="loader"></div>
         <p class="mt-4 text-white">Lade Daten...</p>
     </div>
@@ -61,8 +60,8 @@
                  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
                     <h2 class="text-2xl font-bold mb-4 text-white">Mitglieder-Roster</h2>
                     <div class="flex justify-center space-x-4 mb-6">
-                        <button id="send-hydra-reminder-btn" class="bg-purple-600 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-700 transition-colors shadow-md">Hydra-Erinnerung senden</button>
-                        <button id="send-chimera-reminder-btn" class="bg-teal-600 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-700 transition-colors shadow-md">Chimäre-Erinnerung senden</button>
+                        <button id="send-hydra-reminder-btn" class="bg-purple-600 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed">Hydra-Erinnerung senden</button>
+                        <button id="send-chimera-reminder-btn" class="bg-teal-600 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed">Chimäre-Erinnerung senden</button>
                     </div>
                     <div id="member-list" class="overflow-x-auto"></div>
                 </div>
@@ -97,7 +96,7 @@
                             <label for="profile-discord-id" class="block text-sm font-medium text-gray-400">Discord User ID</label>
                             <input type="text" id="profile-discord-id" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500">
                             <details class="mt-2 text-xs text-gray-500">
-                                <summary class="cursor-pointer">Wie finde ich meine Discord User ID?</summary>
+                                <summary class="cursor-pointer hover:text-white">Wie finde ich meine Discord User ID?</summary>
                                 <div class="p-2 mt-1 bg-gray-700 rounded">
                                     <p>1. Öffne Discord -> Benutzereinstellungen (Zahnrad).</p>
                                     <p>2. Gehe zu "Erweitert".</p>
@@ -110,27 +109,6 @@
                         <div><label for="profile-live-arena-league" class="block text-sm font-medium text-gray-400">Live-Arena-Liga</label><input type="text" id="profile-live-arena-league" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
                     </div>
                     <button id="save-profile-btn" class="w-full bg-amber-600 text-white py-2 px-4 rounded-md hover:bg-amber-700 transition-colors font-semibold">Mein Profil speichern</button>
-                </div>
-            </div>
-            
-            <div id="member-detail-page" class="page-container">
-                 <button id="back-to-roster-btn" class="bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors mb-6">Zurück zum Roster</button>
-                <div class="bg-gray-800 p-6 rounded-xl shadow-xl space-y-4 max-w-xl mx-auto">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-2xl font-bold text-white">Mitgliedsdetails (Admin)</h2>
-                        <button id="delete-member-btn" title="Mitglied löschen" class="text-gray-400 hover:text-red-500 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                    </div>
-                    <p class="text-gray-400">Eintrittsdatum: <span id="detail-join-date" class="font-bold text-white"></span></p>
-                    <div class="flex flex-col gap-4 pt-4 border-t border-gray-700">
-                        <div><label for="detail-in-game-name" class="block text-sm font-medium text-gray-400">In-game Name</label><input type="text" id="detail-in-game-name" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
-                        <div><label for="detail-discord-name" class="block text-sm font-medium text-gray-400">Discord Name</label><input type="text" id="detail-discord-name" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
-                        <div><label for="detail-discord-id" class="block text-sm font-medium text-gray-400">Discord User ID</label><input type="text" id="detail-discord-id" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
-                        <div><label for="detail-tta-league" class="block text-sm font-medium text-gray-400">TTA Liga</label><input type="text" id="detail-tta-league" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
-                        <div><label for="detail-live-arena-league" class="block text-sm font-medium text-gray-400">Live-Arena-Liga</label><input type="text" id="detail-live-arena-league" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
-                    </div>
-                    <button id="save-member-btn" class="w-full bg-amber-600 text-white py-2 px-4 rounded-md hover:bg-amber-700 transition-colors font-semibold">Daten speichern</button>
                 </div>
             </div>
             
@@ -166,7 +144,6 @@
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, collection, onSnapshot, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // --- Firebase Config ---
         const firebaseConfig = {
             apiKey: "AIzaSyDp2nRCStbXotyzBDYO-alZoKWfcvrsQPM",
             authDomain: "clan-app-farbtonne5.firebaseapp.com",
@@ -196,21 +173,17 @@
             userNameEl: document.getElementById('user-name'),
             userPhotoEl: document.getElementById('user-photo'),
             mainNav: document.getElementById('main-nav'),
-            rosterPage: document.getElementById('roster-page'),
-            siegeBoardPage: document.getElementById('siege-board-page'),
-            myProfilePage: document.getElementById('my-profile-page'),
-            settingsPage: document.getElementById('settings-page'),
-            memberDetailPage: document.getElementById('member-detail-page'),
             memberList: document.getElementById('member-list'),
             siegeBoard: document.getElementById('siege-board'),
             assignedToSelect: document.getElementById('assigned-to-select'),
             siegeTaskForm: document.getElementById('siege-task-form'),
             siegeLeaderControls: document.getElementById('siege-leader-controls'),
-            settingsMenuBtns: document.querySelectorAll('.settings-menu-btn'),
-            settingsSections: document.querySelectorAll('.settings-section'),
             sendHydraReminderBtn: document.getElementById('send-hydra-reminder-btn'),
             sendChimeraReminderBtn: document.getElementById('send-chimera-reminder-btn'),
-            // Modals
+            memberForm: document.getElementById('member-form'),
+            settingsMenu: document.getElementById('settings-menu'),
+            saveSettingsBtn: document.getElementById('save-settings-btn'),
+            // Modals & Pages
             claimProfileModal: document.getElementById('claim-profile-modal'),
             claimProfileSelect: document.getElementById('claim-profile-select'),
             confirmClaimBtn: document.getElementById('confirm-claim-btn'),
@@ -218,11 +191,23 @@
             deleteMemberNameSpan: document.getElementById('delete-member-name'),
             confirmDeleteBtn: document.getElementById('confirm-delete-btn'),
             vacationModal: document.getElementById('vacation-modal'),
-            // ... other UI elements
+            vacationMemberNameSpan: document.getElementById('vacation-member-name'),
+            vacationStartDateInput: document.getElementById('vacation-start-date'),
+            vacationEndDateInput: document.getElementById('vacation-end-date'),
+            saveVacationBtn: document.getElementById('save-vacation-btn'),
+            cancelVacationBtn: document.getElementById('cancel-vacation-btn'),
+            removeVacationBtn: document.getElementById('remove-vacation-btn'),
         };
         
         // --- Core Functions ---
         const showLoading = (show) => { ui.loadingIndicator.style.display = show ? 'flex' : 'none'; };
+        const showPage = (pageId) => { 
+            document.querySelectorAll('.page-container').forEach(p => p.style.display = 'none'); 
+            const page = document.getElementById(pageId);
+            if(page) page.style.display = 'block';
+            if (pageId === 'my-profile-page') renderMyProfile();
+            if (pageId === 'settings-page' && currentUser.isLeader) renderSettings();
+        }
 
         onAuthStateChanged(auth, user => {
             showLoading(true);
@@ -262,12 +247,18 @@
                     }
                 } else if (!snapshot.empty) {
                     showClaimProfileModal();
+                } else {
+                    showLoading(false);
                 }
                 
                 updateUserRole();
                 updateUIForRole();
                 renderMembers(allMembers);
                 populateMemberSelect(allMembers);
+                showLoading(false);
+            }, (error) => {
+                console.error("Error fetching members:", error);
+                alert("Fehler beim Laden der Mitglieder. Prüfe die Firebase Regeln und die Browser Konsole (F12).");
                 showLoading(false);
             });
             
@@ -280,15 +271,10 @@
         }
         
         function updateUserRole() {
-            if (currentUser.profile && clanSettings.clanLeads) {
-                currentUser.isLeader = clanSettings.clanLeads.includes(currentUser.profile.id);
-            } else {
-                currentUser.isLeader = false;
-            }
+            currentUser.isLeader = !!(currentUser.profile && clanSettings.clanLeads?.includes(currentUser.profile.id));
         }
 
         function updateUIForRole() {
-            // Navigation
             ui.mainNav.innerHTML = `
                 <button data-page="roster-page" class="nav-btn px-6 py-2 rounded-full font-semibold transition-colors bg-gray-800 hover:bg-gray-700">Roster</button>
                 <button data-page="siege-board-page" class="nav-btn px-6 py-2 rounded-full font-semibold transition-colors bg-gray-800 hover:bg-gray-700">Siege-Board</button>
@@ -297,9 +283,7 @@
             `;
             document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', (e) => showPage(e.target.dataset.page)));
 
-            // Leader-specific controls
-            const displayForLeader = currentUser.isLeader ? 'block' : 'none';
-            ui.siegeLeaderControls.style.display = displayForLeader;
+            ui.siegeLeaderControls.style.display = currentUser.isLeader ? 'block' : 'none';
             ui.sendHydraReminderBtn.disabled = !currentUser.isLeader;
             ui.sendChimeraReminderBtn.disabled = !currentUser.isLeader;
         }
@@ -307,9 +291,7 @@
         function showClaimProfileModal() {
             const unassignedMembers = allMembers.filter(m => !m.googleUID);
             if (unassignedMembers.length > 0) {
-                ui.claimProfileSelect.innerHTML = unassignedMembers
-                    .map(m => `<option value="${m.id}">${m.inGameName}</option>`)
-                    .join('');
+                ui.claimProfileSelect.innerHTML = unassignedMembers.map(m => `<option value="${m.id}">${m.inGameName}</option>`).join('');
                 ui.claimProfileModal.classList.remove('hidden');
             } else {
                 alert("Alle Profile sind bereits zugewiesen. Bitte kontaktiere einen Leader.");
@@ -322,10 +304,13 @@
             const selectedMemberId = ui.claimProfileSelect.value;
             if (selectedMemberId && currentUser.auth) {
                 showLoading(true);
-                await updateDoc(doc(db, "clans", "farbtonne5", "members", selectedMemberId), {
-                    googleUID: currentUser.auth.uid
-                });
-                // No need to hide modal here, the onSnapshot listener will handle it.
+                try {
+                    await updateDoc(doc(db, "clans", "farbtonne5", "members", selectedMemberId), { googleUID: currentUser.auth.uid });
+                } catch (error) {
+                    console.error("Fehler beim Zuweisen des Profils:", error);
+                    alert("Ein Fehler ist aufgetreten. Prüfe die Browser-Konsole (F12) und die Firebase-Sicherheitsregeln.");
+                    showLoading(false);
+                }
             }
         });
         
@@ -335,62 +320,42 @@
         }
 
         // --- Render Functions ---
-        const showPage = (pageId) => { 
-            document.querySelectorAll('.page-container').forEach(p => p.style.display = 'none'); 
-            const page = document.getElementById(pageId);
-            if(page) page.style.display = 'block';
-
-             // Special handling for profile page
-            if (pageId === 'my-profile-page') {
-                renderMyProfile();
-            }
-        }
-        
         function renderMembers(members) {
             ui.memberList.innerHTML = '';
             const table = document.createElement('table');
             table.className = 'min-w-full divide-y divide-gray-700';
-            table.innerHTML = `
-                <thead class="bg-gray-700/50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">In-game Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Discord Name</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Chimäre</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Hydra</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Urlaub</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-gray-800 divide-y divide-gray-700"></tbody>
-            `;
+            table.innerHTML = `<thead class="bg-gray-700/50"><tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">In-game Name</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Discord Name</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Chimäre</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Hydra</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Urlaub</th>
+            </tr></thead><tbody class="bg-gray-800 divide-y divide-gray-700"></tbody>`;
             const tbody = table.querySelector('tbody');
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            const today = new Date(); today.setHours(0, 0, 0, 0);
 
             members.forEach(member => {
                 const vacationStartDate = member.vacationStart ? new Date(member.vacationStart) : null;
                 const vacationEndDate = member.vacationEnd ? new Date(member.vacationEnd) : null;
                 const isOnVacation = vacationStartDate && vacationEndDate && today >= vacationStartDate && today <= vacationEndDate;
-                
                 let vacationStatus = `<span class="text-gray-500">Eintragen</span>`;
                 if (vacationStartDate && vacationEndDate) {
-                    vacationStatus = vacationEndDate >= today ? `bis ${vacationEndDate.toLocaleDateString()}` : '<span class="text-gray-500">Abgelaufen</span>';
+                    vacationStatus = vacationEndDate >= today ? `bis ${new Date(vacationEndDate).toLocaleDateString()}` : '<span class="text-gray-500">Abgelaufen</span>';
                 }
-
                 const isLead = clanSettings.clanLeads?.includes(member.id);
                 const isCurrentUser = member.id === currentUser.profile?.id;
-
                 const row = document.createElement('tr');
-                row.className = isOnVacation ? 'bg-sky-900/70' : '';
+                row.className = isOnVacation ? 'bg-sky-900/70' : (isCurrentUser ? 'bg-amber-900/30' : '');
                 row.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white ${currentUser.isLeader ? 'cursor-pointer hover:text-amber-400' : ''}" data-member-id="${member.id}" data-action="view-detail">
                         ${member.inGameName} ${isLead ? '<span class="text-yellow-400 ml-2" title="Lead">★</span>' : ''}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${member.discordName}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-center ${member.keysChimeraUsed ? 'bg-green-900/60' : 'bg-red-900/60'}">
-                        <input type="checkbox" data-member-id="${member.id}" data-key-type="keysChimeraUsed" ${member.keysChimeraUsed ? 'checked' : ''} ${!isCurrentUser ? 'disabled' : ''} class="form-checkbox h-5 w-5 bg-gray-600 border-gray-500 rounded text-green-500 focus:ring-green-500 disabled:opacity-50">
+                        <input type="checkbox" data-member-id="${member.id}" data-key-type="keysChimeraUsed" ${member.keysChimeraUsed ? 'checked' : ''} ${!isCurrentUser ? 'disabled' : ''} class="form-checkbox h-5 w-5 bg-gray-600 border-gray-500 rounded text-green-500 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed">
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-center ${member.keysHydraUsed ? 'bg-green-900/60' : 'bg-red-900/60'}">
-                        <input type="checkbox" data-member-id="${member.id}" data-key-type="keysHydraUsed" ${member.keysHydraUsed ? 'checked' : ''} ${!isCurrentUser ? 'disabled' : ''} class="form-checkbox h-5 w-5 bg-gray-600 border-gray-500 rounded text-green-500 focus:ring-green-500 disabled:opacity-50">
+                        <input type="checkbox" data-member-id="${member.id}" data-key-type="keysHydraUsed" ${member.keysHydraUsed ? 'checked' : ''} ${!isCurrentUser ? 'disabled' : ''} class="form-checkbox h-5 w-5 bg-gray-600 border-gray-500 rounded text-green-500 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed">
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 ${currentUser.isLeader ? 'cursor-pointer hover:text-amber-400' : ''}" data-member-id="${member.id}" data-action="set-vacation">${vacationStatus}</td>
                 `;
@@ -401,83 +366,215 @@
         
         function renderMyProfile() {
             if (!currentUser.profile) return;
-            const profile = currentUser.profile;
-            document.getElementById('profile-join-date').textContent = new Date(profile.joinDate).toLocaleDateString();
-            document.getElementById('profile-in-game-name').textContent = profile.inGameName;
-            document.getElementById('profile-discord-name').value = profile.discordName || '';
-            document.getElementById('profile-discord-id').value = profile.discordId || '';
-            document.getElementById('profile-tta-league').value = profile.ttaLeague || '';
-            document.getElementById('profile-live-arena-league').value = profile.liveArenaLeague || '';
+            const p = currentUser.profile;
+            document.getElementById('profile-join-date').textContent = new Date(p.joinDate).toLocaleDateString();
+            document.getElementById('profile-in-game-name').textContent = p.inGameName;
+            document.getElementById('profile-discord-name').value = p.discordName || '';
+            document.getElementById('profile-discord-id').value = p.discordId || '';
+            document.getElementById('profile-tta-league').value = p.ttaLeague || '';
+            document.getElementById('profile-live-arena-league').value = p.liveArenaLeague || '';
+        }
+
+        function populateMemberSelect(members) {
+            if (!ui.assignedToSelect) return;
+            ui.assignedToSelect.innerHTML = '<option value="" disabled selected>Mitglied auswählen</option>';
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            members.forEach(member => {
+                const vacationStartDate = member.vacationStart ? new Date(member.vacationStart) : null;
+                const vacationEndDate = member.vacationEnd ? new Date(member.vacationEnd) : null;
+                const isOnVacation = vacationStartDate && vacationEndDate && today >= vacationStartDate && today <= vacationEndDate;
+                if (!isOnVacation) {
+                    const option = document.createElement('option');
+                    option.value = member.inGameName;
+                    option.textContent = member.inGameName;
+                    ui.assignedToSelect.appendChild(option);
+                }
+            });
+        }
+        
+        function renderSiegeTasks(tasks) {
+            ui.siegeBoard.innerHTML = '';
+            const teams = clanSettings.siegeTeamNames || ['Team 1', 'Team 2', 'Team 3'];
+            teams.forEach(team => {
+                const teamDiv = document.createElement('div');
+                teamDiv.className = 'bg-gray-800 p-4 rounded-lg shadow-lg flex-1 min-w-[250px] space-y-2';
+                teamDiv.innerHTML = `<h3 class="text-xl font-bold text-white mb-2">${team}</h3>`;
+                const teamTasks = tasks.filter(task => task.siegeTeam === team);
+                if (teamTasks.length === 0) {
+                    teamDiv.innerHTML += '<p class="text-gray-400 italic">Keine Angriffe zugewiesen.</p>';
+                } else {
+                    teamTasks.forEach(task => {
+                        teamDiv.innerHTML += `<div class="p-3 rounded-lg flex justify-between items-center ${task.status === 'erledigt' ? 'bg-green-700' : 'bg-red-700'}">
+                            <div><span class="text-white font-semibold">${task.assignedTo}</span></div>
+                            ${currentUser.isLeader ? `<button class="bg-amber-500 text-white text-xs px-2 py-1 rounded-full hover:bg-amber-600" data-task-id="${task.id}">${task.status === 'offen' ? 'Abschließen' : 'Öffnen'}</button>` : ''}
+                        </div>`;
+                    });
+                }
+                ui.siegeBoard.appendChild(teamDiv);
+            });
+        }
+        
+        function renderSettings() {
+            // Populate all settings fields from clanSettings object
+            const s = clanSettings;
+            document.getElementById('discord-webhook-url').value = s.webhookUrl || '';
+            const teamNames = s.siegeTeamNames || ['Team 1', 'Team 2', 'Team 3'];
+            document.getElementById('team-name-1').value = teamNames[0];
+            document.getElementById('team-name-2').value = teamNames[1];
+            document.getElementById('team-name-3').value = teamNames[2];
+            document.getElementById('auto-reminder-toggle').checked = s.autoRemindersEnabled || false;
+            const hydra = s.hydraReminderSchedule || { day: 2, time: '19:00' };
+            const chimera = s.chimeraReminderSchedule || { day: 3, time: '19:00' };
+            document.getElementById('hydra-reminder-day').value = hydra.day;
+            document.getElementById('hydra-reminder-time').value = hydra.time;
+            document.getElementById('chimera-reminder-day').value = chimera.day;
+            document.getElementById('chimera-reminder-time').value = chimera.time;
+
+            // Render lead selection
+            const leadContainer = document.getElementById('lead-selection-container');
+            leadContainer.innerHTML = '';
+            allMembers.forEach(member => {
+                const isLead = s.clanLeads?.includes(member.id);
+                leadContainer.innerHTML += `<div class="flex items-center">
+                    <input id="lead-${member.id}" type="checkbox" value="${member.id}" ${isLead ? 'checked' : ''} class="h-4 w-4 rounded border-gray-300 bg-gray-600 text-amber-600 focus:ring-amber-500">
+                    <label for="lead-${member.id}" class="ml-3 block text-sm font-medium text-gray-200">${member.inGameName}</label>
+                </div>`;
+            });
+            
+            showSettingsSubPage('settings-section-member');
+        }
+        
+        function showSettingsSubPage(targetId) {
+            document.querySelectorAll('.settings-section').forEach(section => {
+                section.style.display = section.id === targetId ? 'block' : 'none';
+            });
+            document.querySelectorAll('.settings-menu-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.target === targetId);
+            });
         }
 
         // --- Event Listeners & Logic ---
         ui.loginBtn.addEventListener('click', () => signInWithPopup(auth, new GoogleAuthProvider()));
         ui.logoutBtn.addEventListener('click', () => signOut(auth));
 
-        // Member List Actions
         ui.memberList.addEventListener('click', async (e) => {
             const target = e.target;
             const memberId = target.dataset.memberId || target.closest('td')?.dataset.memberId;
             if (!memberId) return;
-
             const member = allMembers.find(m => m.id === memberId);
             if (!member) return;
 
-            // Key Checkbox Click (only for current user)
-            if (target.matches('input[type="checkbox"]') && member.id === currentUser.profile.id) {
+            if (target.matches('input[type="checkbox"]') && member.id === currentUser.profile?.id) {
                 const keyType = target.dataset.keyType;
                 await updateDoc(doc(db, "clans", "farbtonne5", "members", memberId), { [keyType]: target.checked });
             }
 
-            // Leader Actions
             if (currentUser.isLeader) {
                 const action = target.closest('td')?.dataset.action;
-                if (action === 'view-detail') {
-                    // renderMemberDetail(member); // You need to implement this render function if needed by leaders.
-                    showPage('member-detail-page');
-                } else if (action === 'set-vacation') {
-                    // Show vacation modal logic
+                if (action === 'set-vacation') {
+                    ui.vacationMemberNameSpan.textContent = member.inGameName;
+                    ui.vacationStartDateInput.value = member.vacationStart ? new Date(member.vacationStart).toISOString().split('T')[0] : '';
+                    ui.vacationEndDateInput.value = member.vacationEnd ? new Date(member.vacationEnd).toISOString().split('T')[0] : '';
+                    ui.saveVacationBtn.dataset.memberId = memberId;
+                    ui.removeVacationBtn.dataset.memberId = memberId;
+                    ui.vacationModal.classList.remove('hidden');
                 }
             }
         });
+        
+        ui.saveVacationBtn.addEventListener('click', async (e) => {
+            const memberId = e.currentTarget.dataset.memberId;
+            const startDate = ui.vacationStartDateInput.value;
+            const endDate = ui.vacationEndDateInput.value;
+            if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+                return alert('Das Startdatum darf nicht nach dem Enddatum liegen.');
+            }
+            await updateDoc(doc(db, "clans", "farbtonne5", "members", memberId), {
+                vacationStart: startDate ? new Date(startDate).toISOString() : null,
+                vacationEnd: endDate ? new Date(endDate).toISOString() : null
+            });
+            ui.vacationModal.classList.add('hidden');
+        });
 
-        // Save Profile Button
+        ui.removeVacationBtn.addEventListener('click', async (e) => {
+            const memberId = e.currentTarget.dataset.memberId;
+            await updateDoc(doc(db, "clans", "farbtonne5", "members", memberId), { vacationStart: null, vacationEnd: null });
+            ui.vacationModal.classList.add('hidden');
+        });
+        
+        ui.cancelVacationBtn.addEventListener('click', () => ui.vacationModal.classList.add('hidden'));
+
         document.getElementById('save-profile-btn').addEventListener('click', async () => {
             if (!currentUser.profile) return;
             showLoading(true);
             const dataToUpdate = {
-                discordName: document.getElementById('profile-discord-name').value,
-                discordId: document.getElementById('profile-discord-id').value,
-                ttaLeague: document.getElementById('profile-tta-league').value,
-                liveArenaLeague: document.getElementById('profile-live-arena-league').value
+                discordName: document.getElementById('profile-discord-name').value.trim(),
+                discordId: document.getElementById('profile-discord-id').value.trim(),
+                ttaLeague: document.getElementById('profile-tta-league').value.trim(),
+                liveArenaLeague: document.getElementById('profile-live-arena-league').value.trim()
             };
             await updateDoc(doc(db, "clans", "farbtonne5", "members", currentUser.profile.id), dataToUpdate);
             showLoading(false);
             alert('Profil gespeichert!');
         });
 
-        // Save Settings (Leader)
-        document.getElementById('save-settings-btn').addEventListener('click', async () => {
+        ui.memberForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser.isLeader) return;
+            const inGameName = document.getElementById('in-game-name').value.trim();
+            const discordName = document.getElementById('discord-name').value.trim();
+            if (!inGameName || !discordName) return alert("Namen dürfen nicht leer sein.");
+            
+            const newMember = {
+                inGameName, discordName,
+                joinDate: new Date().toISOString(),
+                googleUID: null, vacationStart: null, vacationEnd: null,
+                keysChimeraUsed: false, keysHydraUsed: false,
+                ttaLeague: '', liveArenaLeague: '', discordId: ''
+            };
+            await addDoc(collection(db, "clans", "farbtonne5", "members"), newMember);
+            ui.memberForm.reset();
+            alert('Mitglied hinzugefügt!');
+        });
+
+        ui.settingsMenu.addEventListener('click', (e) => {
+            if (e.target.matches('.settings-menu-btn')) {
+                showSettingsSubPage(e.target.dataset.target);
+            }
+        });
+
+        ui.saveSettingsBtn.addEventListener('click', async () => {
             if(!currentUser.isLeader) return;
 
             const selectedLeads = Array.from(document.querySelectorAll('#lead-selection-container input:checked')).map(el => el.value);
-
-            // Safety check: Prevent last leader from removing themselves
             if (clanSettings.clanLeads?.length === 1 && clanSettings.clanLeads[0] === currentUser.profile.id && !selectedLeads.includes(currentUser.profile.id)) {
-                alert('Fehler: Du kannst dich nicht selbst als letzten Leader entfernen. Ernenne zuerst einen anderen Leader.');
-                return;
+                return alert('Fehler: Du kannst dich nicht selbst als letzten Leader entfernen. Ernenne zuerst einen anderen Leader.');
             }
 
             showLoading(true);
             const newSettings = {
-                // ... gather all other settings from the form ...
+                webhookUrl: document.getElementById('discord-webhook-url').value.trim(),
+                siegeTeamNames: [
+                    document.getElementById('team-name-1').value.trim(),
+                    document.getElementById('team-name-2').value.trim(),
+                    document.getElementById('team-name-3').value.trim()
+                ],
+                autoRemindersEnabled: document.getElementById('auto-reminder-toggle').checked,
+                hydraReminderSchedule: {
+                    day: parseInt(document.getElementById('hydra-reminder-day').value, 10),
+                    time: document.getElementById('hydra-reminder-time').value
+                },
+                chimeraReminderSchedule: {
+                    day: parseInt(document.getElementById('chimera-reminder-day').value, 10),
+                    time: document.getElementById('chimera-reminder-time').value
+                },
                 clanLeads: selectedLeads
             };
             await setDoc(doc(db, "clans", "farbtonne5"), { settings: newSettings }, { merge: true });
             showLoading(false);
             alert('Einstellungen gespeichert!');
         });
-        
+
     </script>
 </body>
 </html>
