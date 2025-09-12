@@ -58,6 +58,7 @@
         <div class="w-full flex-1">
             <div id="roster-page" class="page-container">
                  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+                    <div id="clash-mode-banner" class="text-center mb-6 p-3 rounded-lg text-white font-bold text-lg"></div>
                     <h2 class="text-2xl font-bold mb-4 text-white">Mitglieder-Roster</h2>
                     <div class="flex justify-center space-x-4 mb-6">
                         <button id="send-hydra-reminder-btn" class="bg-purple-600 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed">Hydra-Erinnerung senden</button>
@@ -153,12 +154,17 @@
                     <h2 class="text-2xl font-bold mb-4 text-white">Einstellungen (Admin)</h2>
                     <div id="settings-menu" class="flex flex-wrap justify-center gap-2 border-b border-gray-700 pb-4 mb-4">
                         <button data-target="settings-section-member" class="settings-menu-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-gray-600 transition-colors">Mitglied</button>
+                        <button data-target="settings-section-clash" class="settings-menu-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-gray-600 transition-colors">Clash Modus</button>
                         <button data-target="settings-section-siege" class="settings-menu-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-gray-600 transition-colors">Siege</button>
                         <button data-target="settings-section-discord" class="settings-menu-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-gray-600 transition-colors">Discord</button>
                         <button data-target="settings-section-reminders" class="settings-menu-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-gray-600 transition-colors">Erinnerungen</button>
                         <button data-target="settings-section-leadership" class="settings-menu-btn px-4 py-2 text-sm rounded-md bg-gray-700 hover:bg-gray-600 transition-colors">Führung</button>
                     </div>
                     <div id="settings-section-member" class="settings-section"><h3 class="text-lg font-semibold text-white mb-2">Neues Mitglied hinzufügen</h3><form id="member-form" class="space-y-4"><div class="flex flex-col sm:flex-row gap-4"><div class="flex-1"><label for="in-game-name" class="block text-sm font-medium text-gray-400">In-game Name</label><input type="text" id="in-game-name" placeholder="In-game Name" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div><div class="flex-1"><label for="discord-name" class="block text-sm font-medium text-gray-400">Discord Name</label><input type="text" id="discord-name" placeholder="Discord Name (ohne #...)" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div></div><button type="submit" class="w-full bg-amber-600 text-white py-2 px-4 rounded-md hover:bg-amber-700 transition-colors font-semibold">Mitglied hinzufügen</button></form></div>
+                    <div id="settings-section-clash" class="settings-section"><h3 class="text-lg font-semibold text-white mb-2">Wöchentlicher Clash-Modus</h3><div class="space-y-4"><div><label for="start-week-input" class="block text-sm font-medium text-gray-400">Start-Kalenderwoche für "All-In"</label><input type="number" id="start-week-input" placeholder="z.B. 37" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"><p class="text-xs text-gray-500 mt-1">Einmalig setzen, um den 2-Wochen-Rhythmus zu starten.</p></div><div class="border-t border-gray-700 pt-4"><p class="text-sm font-medium text-gray-400 mb-2">Manuelle Übersteuerung für diese Woche</p><div class="flex gap-4">
+                        <div class="flex-1"><label for="hydra-mode-override" class="block text-sm text-gray-300">Hydra Modus</label><select id="hydra-mode-override" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"><option value="auto">Automatisch</option><option value="all-in">All-In erzwingen</option><option value="pause">Pause erzwingen</option></select></div>
+                        <div class="flex-1"><label for="chimera-mode-override" class="block text-sm text-gray-300">Chimären Modus</label><select id="chimera-mode-override" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"><option value="auto">Automatisch</option><option value="all-in">All-In erzwingen</option><option value="pause">Pause erzwingen</option></select></div>
+                    </div></div></div></div>
                     <div id="settings-section-siege" class="settings-section"><h3 class="text-lg font-semibold text-white mb-2">Siege-Team Namen</h3><div class="space-y-2"><div><label for="team-name-1" class="block text-sm font-medium text-gray-400">Team 1</label><input type="text" id="team-name-1" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div><div><label for="team-name-2" class="block text-sm font-medium text-gray-400">Team 2</label><input type="text" id="team-name-2" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div><div><label for="team-name-3" class="block text-sm font-medium text-gray-400">Team 3</label><input type="text" id="team-name-3" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div></div></div>
                     <div id="settings-section-discord" class="settings-section"><h3 class="text-lg font-semibold text-white mb-2">Discord-Einstellungen</h3><label for="discord-webhook-url" class="block text-sm font-medium text-gray-400">Discord Webhook URL</label><input type="url" id="discord-webhook-url" placeholder="https://discord.com/api/webhooks/..." class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div>
                     <div id="settings-section-reminders" class="settings-section"><h3 class="text-lg font-semibold text-white mb-2">Automatische Erinnerungen</h3><div class="flex items-center"><input id="auto-reminder-toggle" type="checkbox" class="h-4 w-4 rounded border-gray-300 bg-gray-600 text-amber-600 focus:ring-amber-500"><label for="auto-reminder-toggle" class="ml-3 block text-sm font-medium text-gray-200">Automatische Erinnerungen aktivieren</label></div><div class="mt-4 space-y-4"><div class="flex items-center gap-4"><span class="text-gray-300 w-20">Hydra:</span><select id="hydra-reminder-day" class="flex-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"><option value="1">Montag</option><option value="2">Dienstag</option><option value="3">Mittwoch</option><option value="4">Donnerstag</option><option value="5">Freitag</option><option value="6">Samstag</option><option value="0">Sonntag</option></select><input type="time" id="hydra-reminder-time" class="block rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div><div class="flex items-center gap-4"><span class="text-gray-300 w-20">Chimäre:</span><select id="chimera-reminder-day" class="flex-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"><option value="1">Montag</option><option value="2">Dienstag</option><option value="3">Mittwoch</option><option value="4">Donnerstag</option><option value="5">Freitag</option><option value="6">Samstag</option><option value="0">Sonntag</option></select><input type="time" id="chimera-reminder-time" class="block rounded-md bg-gray-700 border-gray-600 text-white focus:ring-amber-500 focus:border-amber-500"></div></div></div>
@@ -207,6 +213,7 @@
             userNameEl: document.getElementById('user-name'),
             userPhotoEl: document.getElementById('user-photo'),
             mainNav: document.getElementById('main-nav'),
+            clashModeBanner: document.getElementById('clash-mode-banner'),
             memberList: document.getElementById('member-list'),
             siegeBoard: document.getElementById('siege-board'),
             assignedToSelect: document.getElementById('assigned-to-select'),
@@ -236,6 +243,14 @@
             deleteMemberBtn: document.getElementById('delete-member-btn'),
         };
         
+        function getWeekNumber(d) {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+            return weekNo;
+        }
+
         const showLoading = (show) => { ui.loadingIndicator.style.display = show ? 'flex' : 'none'; };
         const showPage = (pageId) => { 
             document.querySelectorAll('.page-container').forEach(p => p.style.display = 'none'); 
@@ -247,7 +262,6 @@
         
         function parseDateAsLocal(dateString) {
             if (!dateString) return null;
-            // Assumes YYYY-MM-DD format from the date picker
             const [year, month, day] = dateString.split('-').map(Number);
             return new Date(year, month - 1, day);
         }
@@ -275,6 +289,7 @@
                 updateUserRole();
                 updateUIForRole();
                 renderMembers(allMembers);
+                renderClashModeBanner();
             });
 
             const unsubMembers = onSnapshot(collection(clanDocRef, "members"), (snapshot) => {
@@ -290,8 +305,6 @@
                     }
                 } else if (!snapshot.empty) {
                     showClaimProfileModal();
-                } else {
-                    showLoading(false);
                 }
                 
                 updateUserRole();
@@ -369,7 +382,6 @@
             const tbody = table.querySelector('tbody');
             const today = new Date(); 
             today.setHours(0, 0, 0, 0);
-
             const rslHelperIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-4 h-4 ml-2 inline-block"><title>RSL Helper verbunden</title><path fill="#FFF" d="M3 1h10v1H3zM2 2h1v1H2zM13 2h1v1h-1zM3 2h2v1H3zM11 2h2v1h-2zM2 3h1v2H2zM13 3h1v2h-1zM5 3h6v1H5zM2 5h1v2H2zM13 5h1v2h-1zM3 6h2v1H3zM11 6h2v1h-2zM2 7h1v2H2zM13 7h1v2h-1zM5 7h1v5H5zM10 7h1v5h-1zM2 9h1v2H2zM13 9h1v2h-1zM3 12h2v1H3zM6 12h4v1H6zM11 12h2v1h-2zM2 13h1v1H2zM13 13h1v1h-1zM3 14h10v1H3z"/><path fill="#F00" d="M5 2h6v1H5z"/><path fill="#0FF" d="M6 4h4v2H6zM5 5h1v1H5zM10 5h1v1h-1zM3 8h2v2H3zM11 8h2v2h-2zM6 13h4v1H6z"/></svg>`;
 
             members.forEach(member => {
@@ -421,6 +433,33 @@
                 tbody.appendChild(row);
             });
             ui.memberList.appendChild(table);
+        }
+
+        function getClashMode(bossType) {
+            const override = clanSettings[`${bossType}ModeOverride`];
+            if (override && override !== 'auto') {
+                return override;
+            }
+            const startWeek = clanSettings.clashStartWeek;
+            if (!startWeek) return 'auto'; // Default if not set
+            const currentWeek = getWeekNumber(new Date());
+            return ((currentWeek - startWeek) % 2 === 0) ? 'all-in' : 'pause';
+        }
+
+        function renderClashModeBanner() {
+            const hydraMode = getClashMode('hydra');
+            const chimeraMode = getClashMode('chimera');
+            
+            const hydraText = hydraMode === 'all-in' ? 'All-In' : 'Pause';
+            const chimeraText = chimeraMode === 'all-in' ? 'All-In' : 'Pause';
+            
+            const hydraColor = hydraMode === 'all-in' ? 'bg-green-600' : 'bg-yellow-600';
+            const chimeraColor = chimeraMode === 'all-in' ? 'bg-green-600' : 'bg-yellow-600';
+
+            ui.clashModeBanner.innerHTML = `
+                <span class="${hydraColor} px-3 py-1 rounded-full">Hydra: ${hydraText}</span>
+                <span class="${chimeraColor} px-3 py-1 rounded-full ml-4">Chimäre: ${chimeraText}</span>
+            `;
         }
         
         function renderMyProfile() {
@@ -492,6 +531,9 @@
         function renderSettings() {
             const s = clanSettings;
             document.getElementById('discord-webhook-url').value = s.webhookUrl || '';
+            document.getElementById('start-week-input').value = s.clashStartWeek || '';
+            document.getElementById('hydra-mode-override').value = s.hydraModeOverride || 'auto';
+            document.getElementById('chimera-mode-override').value = s.chimeraModeOverride || 'auto';
             const teamNames = s.siegeTeamNames || ['Team 1', 'Team 2', 'Team 3'];
             document.getElementById('team-name-1').value = teamNames[0];
             document.getElementById('team-name-2').value = teamNames[1];
@@ -762,6 +804,9 @@
             showLoading(true);
             const newSettings = {
                 webhookUrl: document.getElementById('discord-webhook-url').value.trim(),
+                clashStartWeek: parseInt(document.getElementById('start-week-input').value, 10) || null,
+                hydraModeOverride: document.getElementById('hydra-mode-override').value,
+                chimeraModeOverride: document.getElementById('chimera-mode-override').value,
                 siegeTeamNames: [
                     document.getElementById('team-name-1').value.trim() || 'Team 1',
                     document.getElementById('team-name-2').value.trim() || 'Team 2',
